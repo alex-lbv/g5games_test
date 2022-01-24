@@ -20,15 +20,14 @@ export class Dog {
       frames: this.context.anims.generateFrameNumbers('loader'),
       frameRate: 60
     });
-    this.sprite = this.context.add.sprite(this.x, this.y, 'loader');
+    this.sprite = this.context.add.sprite(this.x, this.y, 'loader').setAlpha(0);
     this.sprite.setScale(this.scale, this.scale);
 
   }
 
   addClickHandler() {
     this.dog.on('pointerdown', () => {
-      // this.dog.setVisible(false);
-      this.sprite.play({key: 'walk', repeat: 0})
+      this.sprite.setAlpha(1).play({key: 'walk', repeat: 0})
       this.dog.removeInteractive();
       if (this.cb) this.cb();
     }, this.context)
