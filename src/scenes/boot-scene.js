@@ -5,12 +5,12 @@ export class BootScene extends Phaser.Scene {
     super('Boot');
 
     this.startSceneItems = null;
-
   }
 
   preload() {
     this.load.image('btn', '../src/assets/btn.png');
     this.load.image('doggy', '../src/assets/doggy.png');
+    this.load.image('logo', '../src/assets/logo.png');
     this.load.image('doggy-reverse', '../src/assets/doggy-reverse.png');
     this.load.image('back_five_dogs', '../src/assets/back_five_dogs.jpg');
     this.load.image('char', '../src/assets/char.png');
@@ -33,7 +33,7 @@ export class BootScene extends Phaser.Scene {
           scaleX: 1.1,
           scaleY: 1.1,
           ease: 'Linear',
-          duration: 5000,
+          duration: 10000,
         });
       }, 3000);
 
@@ -46,8 +46,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.launch('Game').launch('Start').stop();
-    // this.scene.start('End');
+    this.scene.launch('Button').launch('Game').launch('Start');
     this.startSceneItems = this.scene.get('Start').children.list;
 
     this.scene.transition({

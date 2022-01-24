@@ -9,7 +9,7 @@ export class Dog {
     this.dog = this.context.add.image(this.x, this.y, 'doggy');
     this.sprite = null;
     this.init();
-    this.addClickHandler()
+    this.addClickHandler();
   }
 
   init() {
@@ -20,9 +20,9 @@ export class Dog {
       frames: this.context.anims.generateFrameNumbers('loader'),
       frameRate: 60
     });
-    this.sprite = this.context.add.sprite(this.x, this.y, 'loader').setAlpha(0);
-    this.sprite.setScale(this.scale, this.scale);
-
+    this.sprite = this.context
+      .add.sprite(this.x, this.y, 'loader')
+      .setAlpha(0).setScale(this.scale, this.scale);
   }
 
   addClickHandler() {
