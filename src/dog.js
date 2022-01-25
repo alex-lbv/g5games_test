@@ -16,18 +16,18 @@ export class Dog {
     this.dog.setScale(this.scale * this.direction, this.scale);
     this.dog.setInteractive();
     this.context.anims.create({
-      key: 'walk',
-      frames: this.context.anims.generateFrameNumbers('loader'),
+      key: 'selection',
+      frames: this.context.anims.generateFrameNumbers('select'),
       frameRate: 60
     });
     this.sprite = this.context
-      .add.sprite(this.x, this.y, 'loader')
+      .add.sprite(this.x, this.y, 'select')
       .setAlpha(0).setScale(this.scale, this.scale);
   }
 
   addClickHandler() {
     this.dog.on('pointerdown', () => {
-      this.sprite.setAlpha(1).play({key: 'walk', repeat: 0})
+      this.sprite.setAlpha(1).play({key: 'selection', repeat: 0})
       this.dog.removeInteractive();
       if (this.cb) this.cb();
     }, this.context)
