@@ -6,10 +6,7 @@ const config = {
   backgroundColor: '#000000',
   parent: 'dog-search',
   scale: {
-    // autoCenter: Phaser.Scale.CENTER_BOTH,
     mode: Phaser.Scale.RESIZE,
-    // autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
-    // autoCenter: Phaser.Scale.CENTER_VERTICALLY,
     width: 767,
     height: 1075,
     min: {

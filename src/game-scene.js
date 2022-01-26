@@ -1,5 +1,4 @@
 import {Dog} from "./dog";
-import {logPlugin} from "@babel/preset-env/lib/debug";
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -9,7 +8,6 @@ export class GameScene extends Phaser.Scene {
     this.orientation = null;
     this.GAME_WIDTH = 767;
     this.GAME_HEIGHT = 1075;
-
     this.orientation = null;
 
     this.dogs = [
@@ -84,7 +82,6 @@ export class GameScene extends Phaser.Scene {
         }
       },
     ];
-
     this.dogsList = [];
   }
 
@@ -119,7 +116,6 @@ export class GameScene extends Phaser.Scene {
     this.background = this.add.image(0, 0, 'back_five_dogs').setOrigin(0, 0);
 
     this.dogs.map((dog) => {
-      // let {x: xL, y: yL, scale: sL, direction: dL} = dog.LANDSCAPE;
       let {x: xP, y: yP, scale: sP, direction: dP} = dog.PORTRAIT;
 
       this.dogsList.push(new Dog(this, xP, yP, sP, dP, () => ++this.count));
@@ -135,17 +131,13 @@ export class GameScene extends Phaser.Scene {
     this.endSceneItems = [
       this.add.rectangle(0, 0, window.innerWidth, window.innerHeight, 0x000000).setOrigin(0, 0),
       this.add.image(380, 180, 'logo'),
-      // this.add.image(400, 310, 'char').setScale(-.8, .8),
       this.add.image(370, 640, 'char').setScale(-.8, .8),
-      // this.add.text(340, 200, 'Great Job', {font: '600 70px Arial', fill: '#faf1b8'}),
       this.add.text(110, 570, 'Great Job', {font: '600 120px Arial', fill: '#fce043'}),
       this.add.text(110, 720, 'Can you solve', {font: '600 80px Arial', fill: '#ffffff'}),
       this.add.text(100, 810, 'every mystery?', {font: '600 80px Arial', fill: '#ffffff'}),
     ];
 
-    // this.btn = this.add.image(510, 530, 'btn');
     this.btn = this.add.image(225, 940, 'btn').setOrigin(0, 0);
-    // this.textBtn = this.add.text(405, 500, 'Play Now', {font: '50px Arial', fill: '#faf1b8'});
     this.textBtn = this.add.text(280, 975, 'Play Now', {font: '600 50px Arial', fill: '#faf1b8'}).setOrigin(0, 0);
     this.btn.setInteractive();
 
@@ -157,6 +149,7 @@ export class GameScene extends Phaser.Scene {
       item.alpha = 0;
     })
 
+    // Запускает анимацию первого экрана - Появление
     this.startSceneItems.forEach((item) => {
       this.tweens.add({
         targets: item,
@@ -166,6 +159,7 @@ export class GameScene extends Phaser.Scene {
       });
     })
 
+    // Запускает анимацию первого экрана - Закрытие
     setTimeout(() => {
       this.startSceneItems.forEach((item) => {
 
@@ -201,9 +195,7 @@ export class GameScene extends Phaser.Scene {
       })
     }, 5000);
 
-    this.btn.on('pointerdown', () => {
-      console.log('click');
-    })
+    this.btn.on('pointerdown', this.buttonClickHandler)
 
     this.scale.on('orientationchange', this.checkOrientation, this);
     this.scale.on('resize', this.resize, this);
@@ -212,57 +204,6 @@ export class GameScene extends Phaser.Scene {
     if (this.orientation === Phaser.Scale.LANDSCAPE) {
       this.startOptionsLandScape();
     }
-  }
-
-  checkOrientation(orientation) {
-    this.orientation = orientation;
-    this.scale.refresh();
-    if (orientation === Phaser.Scale.PORTRAIT) {
-      this.startOptionsPortrait();
-    } else if (orientation === Phaser.Scale.LANDSCAPE) {
-      this.startOptionsLandScape();
-    }
-  }
-
-  startOptionsPortrait() {
-    this.background.setDisplaySize(this.GAME_WIDTH * 2, this.GAME_HEIGHT);
-    this.background.setPosition(-530, 0);
-
-    this.dogsList.forEach((dog, index) => {
-      let {x, y, scale, direction} = this.dogs[index].PORTRAIT;
-
-      dog.changeOptions(x, y, scale, direction)
-    });
-
-    this.btn.setPosition(225, 940);
-    this.btn.scale = 1.2;
-  }
-
-  startOptionsLandScape() {
-    this.parent.setSize(this.scale.gameSize.width, this.scale.gameSize.height);
-    this.sizer.setAspectMode(Phaser.Structs.Size.NONE)
-    this.sizer.setSize(this.parent.width, this.parent.height);
-    this.background.setDisplaySize(this.parent.width, this.parent.height);
-    this.background.setPosition(0, 0);
-
-    this.dogsList.forEach((dog, index) => {
-      let {x, y, scale, direction} = this.dogs[index].LANDSCAPE;
-
-      dog.changeOptions(x, y, scale, direction)
-    });
-
-    this.btn.setPosition(window.innerWidth / 2 - 100, window.innerHeight - 100);
-    this.btn.scale = .7;
-  }
-
-  resize(gameSize) {
-    const width = gameSize.width;
-    const height = gameSize.height;
-
-    this.parent.setSize(width, height);
-    this.sizer.setSize(width, height);
-
-    this.updateCamera();
   }
 
   updateCamera() {
@@ -285,32 +226,187 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  addBtnAnimate() {
-    this.tweens.add({
-      targets: this.btn,
-      ease: 'Linear',
-      scaleX: 1.3,
-      scaleY: 1.3,
-      x: this.btn.x - 10,
-      duration: 750,
-      yoyo: true,
-      loop: -1
+  checkOrientation(orientation) {
+    this.orientation = orientation;
+    this.scale.refresh();
+    if (orientation === Phaser.Scale.PORTRAIT) {
+      this.startOptionsPortrait();
+    } else if (orientation === Phaser.Scale.LANDSCAPE) {
+      this.startOptionsLandScape();
+    }
+  }
+
+  startOptionsPortrait() {
+    this.background.setDisplaySize(this.GAME_WIDTH * 2, this.GAME_HEIGHT);
+    this.background.setPosition(-530, 0);
+
+    this.dogsList.forEach((dog, index) => {
+      let {x, y, scale, direction} = this.dogs[index].PORTRAIT;
+
+      dog.changeOptions(x, y, scale, direction);
     });
 
-    this.tweens.add({
-      targets: this.textBtn,
-      ease: 'Linear',
-      x: this.textBtn.x - 10,
-      y: this.textBtn.y + 5,
-      scale: 1.1,
-      duration: 750,
-      yoyo: true,
-      loop: -1
+    if (this.count === 6) {
+      this.btn.off('pointerdown', this.buttonClickHandler)
+      this.btn.destroy();
+      this.textBtn.destroy();
+
+      this.btn = this.add.image(225, 940, 'btn').setOrigin(0, 0);
+      this.textBtn = this.add.text(280, 975, 'Play Now', {font: '600 50px Arial', fill: '#faf1b8'}).setOrigin(0, 0);
+      this.btn.setInteractive();
+      this.btn.on('pointerdown', this.buttonClickHandler);
+
+      this.addBtnAnimate();
+    }
+
+    this.btn.setPosition(225, 940);
+    this.btn.scale = 1.2;
+
+    this.textBtn.setPosition(280, 975);
+    this.textBtn.setStyle({font: '600 50px Arial', fill: '#faf1b8'})
+
+    this.startSceneItems[0].setSize(window.innerWidth, window.innerHeight);
+    this.startSceneItems[1].setPosition(70, 370).setStyle({font: '600 70px Arial', fill: '#ffffff'});
+    this.startSceneItems[2].setPosition(50, 500).setStyle({font: '600 70px Arial', fill: '#ffffff'});
+    this.startSceneItems[3].setPosition(630, 410).setScale(1);
+
+    this.endSceneItems[0].setSize(window.innerWidth, window.innerHeight);
+    this.endSceneItems[1].setPosition(380, 180).setScale(1)
+    this.endSceneItems[2].setPosition(370, 640).setScale(-.8, .8);
+    this.endSceneItems[3].setPosition(110, 570).setStyle({font: '600 120px Arial', fill: '#fce043'});
+    this.endSceneItems[4].setPosition(110, 720).setStyle({font: '600 80px Arial', fill: '#ffffff'});
+    this.endSceneItems[5].setPosition(100, 810).setStyle({font: '600 80px Arial', fill: '#ffffff'});
+  }
+
+  startOptionsLandScape() {
+    this.parent.setSize(this.scale.gameSize.width, this.scale.gameSize.height);
+    this.sizer.setAspectMode(Phaser.Structs.Size.NONE);
+    this.sizer.setSize(this.parent.width, this.parent.height);
+    this.background.setDisplaySize(this.parent.width, this.parent.height);
+    this.background.setPosition(0, 0);
+
+    this.dogsList.forEach((dog, index) => {
+      let {x, y, scale, direction} = this.dogs[index].LANDSCAPE;
+
+      dog.changeOptions(x, y, scale, direction)
+    });
+
+    if (this.count === 6) {
+      this.btn.off('pointerdown', this.buttonClickHandler)
+      this.btn.destroy();
+      this.textBtn.destroy();
+
+      this.btn = this.add.image(window.innerWidth / 2 - 100, window.innerHeight - 100, 'btn')
+        .setOrigin(0, 0);
+      this.textBtn = this.add.text(window.innerWidth / 2 - 70, window.innerHeight - 75, 'Play Now', {
+        font: '600 40px Arial',
+        fill: '#faf1b8'
+      }).setOrigin(0, 0);
+      this.btn.setInteractive();
+      this.btn.on('pointerdown', this.buttonClickHandler)
+
+      this.addBtnAnimate();
+    }
+
+    this.btn.setPosition(window.innerWidth / 2 - 100, window.innerHeight - 100);
+    this.btn.scale = .85;
+    this.textBtn.setPosition(window.innerWidth / 2 - 70, window.innerHeight - 75);
+    this.textBtn.setStyle({font: '600 40px Arial', fill: '#faf1b8'})
+
+    this.startSceneItems[0].setSize(window.innerWidth, window.innerHeight);
+    this.startSceneItems[1].setPosition(window.innerWidth / 3, window.innerHeight / 4).setStyle({
+      font: '600 50px Arial',
+      fill: '#ffffff'
+    });
+    this.startSceneItems[2].setPosition(window.innerWidth / 3.2, window.innerHeight / 2).setStyle({
+      font: '600 50px Arial',
+      fill: '#ffffff'
+    });
+    this.startSceneItems[3].setPosition(window.innerWidth / 1.35, window.innerHeight / 2.9).setScale(.7);
+
+    this.endSceneItems[0].setSize(window.innerWidth, window.innerHeight);
+    this.endSceneItems[1].setPosition(window.innerWidth / 2 + 20, window.innerHeight / 6).setScale(.5);
+    this.endSceneItems[2].setPosition(window.innerWidth / 3.5, window.innerHeight / 2).setScale(.6);
+    this.endSceneItems[3].setPosition(window.innerWidth / 2.6, window.innerHeight / 3).setStyle({
+      font: '600 60px Arial',
+      fill: '#fce043'
+    });
+    this.endSceneItems[4].setPosition(window.innerWidth / 2.4, this.endSceneItems[3].y + 80).setStyle({
+      font: '700 30px Arial',
+      fill: '#ffffff'
+    });
+    this.endSceneItems[5].setPosition(window.innerWidth / 2.45, this.endSceneItems[4].y + 40).setStyle({
+      font: '700 30px Arial',
+      fill: '#ffffff'
     });
   }
 
-  update() {
+  resize(gameSize) {
+    const width = gameSize.width;
+    const height = gameSize.height;
 
+    this.parent.setSize(width, height);
+    this.sizer.setSize(width, height);
+
+    this.updateCamera();
+  }
+
+  // Добавляет анимацию на кнопку
+  addBtnAnimate() {
+    if (this.orientation === Phaser.Scale.PORTRAIT) {
+      this.tweens.add({
+        targets: this.btn,
+        ease: 'Linear',
+        scaleX: 1.3,
+        scaleY: 1.3,
+        x: this.btn.x - 10,
+        duration: 750,
+        yoyo: true,
+        loop: -1
+      });
+
+      this.tweens.add({
+        targets: this.textBtn,
+        ease: 'Linear',
+        x: this.textBtn.x - 10,
+        y: this.textBtn.y + 5,
+        scale: 1.1,
+        duration: 750,
+        yoyo: true,
+        loop: -1
+      });
+    } else if (this.orientation === Phaser.Scale.LANDSCAPE) {
+      this.tweens.add({
+        targets: this.btn,
+        ease: 'Linear',
+        scaleX: 0.95,
+        scaleY: 0.95,
+        x: this.btn.x - 10,
+        duration: 750,
+        yoyo: true,
+        loop: -1
+      });
+
+      this.tweens.add({
+        targets: this.textBtn,
+        ease: 'Linear',
+        x: this.textBtn.x - 5,
+        y: this.textBtn.y + 5,
+        scale: 1.1,
+        duration: 750,
+        yoyo: true,
+        loop: -1
+      });
+    }
+  }
+
+  // Описывает действие при клике на кнопку
+  buttonClickHandler() {
+    console.log('click');
+    document.location.href = "https://g5e.com/";
+  }
+
+  update() {
     if (this.count === 5) {
       this.endSceneItems.forEach((item) => {
         this.tweens.add({
@@ -322,7 +418,7 @@ export class GameScene extends Phaser.Scene {
       });
 
       this.addBtnAnimate();
-      this.count = 0;
+      this.count = 6;
     }
   }
 }
