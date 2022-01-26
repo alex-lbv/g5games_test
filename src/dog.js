@@ -25,6 +25,13 @@ export class Dog {
       .setAlpha(0).setScale(this.scale, this.scale);
   }
 
+  changeOptions(x, y, scale, direction) {
+    this.dog.scale = 1;
+    this.sprite.scale = 1;
+    this.dog.setPosition(x, y).setScale(scale * direction, scale);
+    this.sprite.setPosition(x, y).setScale(scale * direction, scale);
+  }
+
   addClickHandler() {
     this.dog.on('pointerdown', () => {
       this.sprite.setAlpha(1).play({key: 'selection', repeat: 0})
